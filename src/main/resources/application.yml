@@ -1,0 +1,39 @@
+server:
+#  error:
+#    path: /error
+#  servlet:
+#    contextPath: /api
+
+spring:
+  datasource:
+    url: ${DATASOURCE_URL}
+    username: ${DATASOURCE_USERNAME}
+    password: ${DATASOURCE_PASSWORD}
+  jpa:
+    defer-datasource-initialization: true
+    properties:
+      hibernate.dialect: ${DATASOURCE_DIALECT}
+    hibernate:
+      ddl-auto: update
+
+management:
+  server:
+    port: 7001
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+logging:
+  level:
+    root: INFO
+    com.glitchtako.forum: DEBUG

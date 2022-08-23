@@ -1,11 +1,13 @@
 package com.glitchtako.forum.service.impl;
 
+import com.glitchtako.forum.exception.EmailExistedException;
 import com.glitchtako.forum.exception.UserNotFoundException;
+import com.glitchtako.forum.exception.UsernameExistedException;
 import com.glitchtako.forum.model.dto.UserDetailsDTO;
-import com.glitchtako.forum.model.entity.Role;
 import com.glitchtako.forum.model.entity.User;
 import com.glitchtako.forum.model.request.LoginRequest;
 import com.glitchtako.forum.model.request.RegisterRequest;
+import com.glitchtako.forum.model.request.UpdatePasswordRequest;
 import com.glitchtako.forum.model.response.LoginResponse;
 import com.glitchtako.forum.repository.RoleRepository;
 import com.glitchtako.forum.repository.UserRepository;
@@ -18,8 +20,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Set;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -60,16 +60,32 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void register(RegisterRequest request) {
+    public void register(RegisterRequest request) throws EmailExistedException, UsernameExistedException {
+
+        if (this.userRepository.existsByEmail(request.getEmail())) {
+            throw new EmailExistedException();
+        }
+
+        if (this.userRepository.existsByUsername(request.getUsername())) {
+            throw new UsernameExistedException();
+        }
 
         User newUser = new User();
-        Role role = this.roleRepository.findByName("USER").get();
+//        Role role = this.roleRepository.findByName("USER").get();
 
         newUser.setEmail(request.getEmail());
         newUser.setPassword(passwordEncoder.encode(request.getPassword()));
-        newUser.setRoles(Set.of(role));
+//        newUser.setRoles(Set.of(role));
         newUser.setUsername(request.getUsername());
 
         this.userRepository.save(newUser);
+    }
+
+    @Override
+    public Boolean updatePassword(UpdatePasswordRequest request) throws UserNotFoundException {
+        final User user = this.userRepository.findById(request.getUserId()).orElseThrow(UserNotFoundException::new);
+        this.passwordEncoder.encode(request.getOldPassword());
+
+        return false;
     }
 }

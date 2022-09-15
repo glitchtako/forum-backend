@@ -11,6 +11,7 @@ import com.glitchtako.forum.model.response.RestResponse;
 import com.glitchtako.forum.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -31,9 +32,13 @@ public class AuthController {
         return ResponseEntity.ok(true);
     }
 
-    @PutMapping(value = "/password")
-    public RestResponse<Boolean> updatePassword(@RequestBody UpdatePasswordRequest request) throws UserNotFoundException {
-        return RestResponse.ok(this.authService.updatePassword(request));
+    @PreAuthorize("#id == principal.id")
+    @PutMapping(value = "/{id}/password")
+    public RestResponse<Boolean> updatePassword(@PathVariable(value = "id") Long userId, @RequestBody UpdatePasswordRequest request) throws UserNotFoundException {
+        return RestResponse.ok(this.authService.updatePassword(userId, request));
     }
+
+//    @PostMapping(value = "/token/refresh")
+//    public RestResponse<String>
 
 }

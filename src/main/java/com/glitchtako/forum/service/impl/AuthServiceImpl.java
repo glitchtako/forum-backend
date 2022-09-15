@@ -4,11 +4,13 @@ import com.glitchtako.forum.exception.EmailExistedException;
 import com.glitchtako.forum.exception.UserNotFoundException;
 import com.glitchtako.forum.exception.UsernameExistedException;
 import com.glitchtako.forum.model.dto.UserDetailsDTO;
+import com.glitchtako.forum.model.entity.RefreshToken;
 import com.glitchtako.forum.model.entity.User;
 import com.glitchtako.forum.model.request.LoginRequest;
 import com.glitchtako.forum.model.request.RegisterRequest;
 import com.glitchtako.forum.model.request.UpdatePasswordRequest;
 import com.glitchtako.forum.model.response.LoginResponse;
+import com.glitchtako.forum.repository.RefreshTokenRepository;
 import com.glitchtako.forum.repository.RoleRepository;
 import com.glitchtako.forum.repository.UserRepository;
 import com.glitchtako.forum.service.AuthService;
@@ -20,6 +22,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -34,15 +42,20 @@ public class AuthServiceImpl implements AuthService {
     private RoleRepository roleRepository;
 
     @Autowired
+    private RefreshTokenRepository refreshTokenRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
     private JwtUtils jwtUtils;
 
+    private final long refreshTokenExpirationDays = 31;
+
     @Override
     public LoginResponse login(LoginRequest request) throws UserNotFoundException {
 
-        this.userRepository.findByUsername(request.getUsername()).orElseThrow(UserNotFoundException::new);
+        User user = this.userRepository.findByUsername(request.getUsername()).orElseThrow(UserNotFoundException::new);
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
@@ -55,7 +68,24 @@ public class AuthServiceImpl implements AuthService {
 //                .map(GrantedAuthority::getAuthority)
 //                .collect(Collectors.toSet());
 
-        return LoginResponse.builder().jwt(jwt).user(authUser).build();
+
+        Optional<RefreshToken> refreshTokenOpt = this.refreshTokenRepository.findByUser(user);
+        String refreshTokenString = UUID.randomUUID().toString();
+
+        if (refreshTokenOpt.isPresent()) {
+            RefreshToken refreshToken = refreshTokenOpt.get();
+            refreshToken.setExpireAt(Instant.now().plus(60, ChronoUnit.DAYS));
+            refreshToken.setToken(refreshTokenString);
+        } else {
+            RefreshToken refreshToken = RefreshToken.builder().token(refreshTokenString)
+                    .user(user)
+                    .expireAt(Instant.now().plus(60, ChronoUnit.DAYS))
+                    .build();
+
+            this.refreshTokenRepository.save(refreshToken);
+        }
+
+        return LoginResponse.builder().accessToken(jwt).refreshToken(refreshTokenString).user(authUser).build();
 
     }
 
@@ -82,8 +112,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public Boolean updatePassword(UpdatePasswordRequest request) throws UserNotFoundException {
-        final User user = this.userRepository.findById(request.getUserId()).orElseThrow(UserNotFoundException::new);
+    public Boolean updatePassword(Long userId, UpdatePasswordRequest request) throws UserNotFoundException {
+        final User user = this.userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         this.passwordEncoder.encode(request.getOldPassword());
 
         return false;

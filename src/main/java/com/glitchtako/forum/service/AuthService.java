@@ -14,5 +14,5 @@ public interface AuthService {
 
     void register(RegisterRequest request) throws EmailExistedException, UsernameExistedException;
 
-    Boolean updatePassword(UpdatePasswordRequest request) throws UserNotFoundException;
+    Boolean updatePassword(Long userId, UpdatePasswordRequest request) throws UserNotFoundException;
 }

@@ -13,20 +13,18 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class BaseController {
 
-    @Autowired
-    private ObjectMapper objectMapper;
+  @Autowired private ObjectMapper objectMapper;
 
-    protected Authentication getAuth() {
-        return SecurityContextHolder.getContext().getAuthentication();
+  protected Authentication getAuth() {
+    return SecurityContextHolder.getContext().getAuthentication();
+  }
+
+  protected UserDetailsDTO getPrincipalDTO() throws BadCredentialsException {
+    try {
+      return (UserDetailsDTO) this.getAuth().getPrincipal();
+    } catch (Exception e) {
+      log.error(e.getMessage(), e);
+      throw new BadCredentialsException(e.getMessage());
     }
-
-    protected UserDetailsDTO getPrincipalDTO() throws BadCredentialsException {
-        try {
-            return (UserDetailsDTO) this.getAuth().getPrincipal();
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            throw new BadCredentialsException(e.getMessage());
-        }
-    }
-
+  }
 }

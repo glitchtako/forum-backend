@@ -7,9 +7,9 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class PageArticleRequest extends PageRequest {
 
-    private Long categoryId;
+  private Long categoryId;
 
-    private String title;
+  private String title;
 
-    private Long authorId;
+  private Long authorId;
 }

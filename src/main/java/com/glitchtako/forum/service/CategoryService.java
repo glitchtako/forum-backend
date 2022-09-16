@@ -9,12 +9,10 @@ import java.util.List;
 
 public interface CategoryService {
 
-    List<Category> getAllCategories();
+  List<Category> getAllCategories();
 
-    Category createCategory(CreateCategoryRequest request);
+  Category createCategory(CreateCategoryRequest request);
 
-    Category updateCategory(Long categoryId, UpdateCategoryRequest request) throws CategoryNotFoundException;
-
-
-
+  Category updateCategory(Long categoryId, UpdateCategoryRequest request)
+      throws CategoryNotFoundException;
 }

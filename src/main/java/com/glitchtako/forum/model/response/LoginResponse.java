@@ -11,9 +11,9 @@ import java.util.Set;
 @Builder
 public class LoginResponse {
 
-    private String accessToken;
+  private String accessToken;
 
-    private String refreshToken;
+  private String refreshToken;
 
-    private UserDetailsDTO user;
+  private UserDetailsDTO user;
 }

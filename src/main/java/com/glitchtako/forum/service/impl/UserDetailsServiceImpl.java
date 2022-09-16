@@ -22,41 +22,46 @@ import java.util.stream.Collectors;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    @Autowired
-    private UserRepository userRepository;
+  @Autowired private UserRepository userRepository;
 
-    @Override
-    @Transactional
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+  @Override
+  @Transactional
+  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        User user = this.userRepository.findByUsername(username).orElseThrow();
+    User user = this.userRepository.findByUsername(username).orElseThrow();
 
-        return this.getSecurityUser(user);
-    }
+    return this.getSecurityUser(user);
+  }
 
-    private UserDetailsDTO getSecurityUser(User user) {
+  private UserDetailsDTO getSecurityUser(User user) {
 
-        Set<String> permissions = new HashSet<>();
-        user.getRoles().forEach(role -> {
-            permissions.add(role.getName());
-            permissions.addAll(role.getPermissions().stream().map(Permission::getName).collect(Collectors.toSet()));
-        });
+    Set<String> permissions = new HashSet<>();
+    user.getRoles()
+        .forEach(
+            role -> {
+              permissions.add(role.getName());
+              permissions.addAll(
+                  role.getPermissions().stream()
+                      .map(Permission::getName)
+                      .collect(Collectors.toSet()));
+            });
 
-        List<GrantedAuthority> authorities =
-                AuthorityUtils.commaSeparatedStringToAuthorityList(String.join(",", permissions));
+    List<GrantedAuthority> authorities =
+        AuthorityUtils.commaSeparatedStringToAuthorityList(String.join(",", permissions));
 
-        UserDetailsDTO userDetailsDTO = UserDetailsDTO.builder()
-                .userId(user.getId())
-                .email(user.getEmail())
-                .username(user.getUsername())
-                .password(user.getPassword())
-                .authorities(authorities)
-                .isAccountNonExpired(true)
-                .isAccountNonLocked(true)
-                .isCredentialsNonExpired(true)
-                .isEnabled(true)
-                .build();
+    UserDetailsDTO userDetailsDTO =
+        UserDetailsDTO.builder()
+            .userId(user.getId())
+            .email(user.getEmail())
+            .username(user.getUsername())
+            .password(user.getPassword())
+            .authorities(authorities)
+            .isAccountNonExpired(true)
+            .isAccountNonLocked(true)
+            .isCredentialsNonExpired(true)
+            .isEnabled(true)
+            .build();
 
-        return userDetailsDTO;
-    }
+    return userDetailsDTO;
+  }
 }

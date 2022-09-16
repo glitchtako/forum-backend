@@ -18,27 +18,30 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/auth")
 public class AuthController {
 
-    @Autowired
-    private AuthService authService;
+  @Autowired private AuthService authService;
 
-    @PostMapping(value = "/login")
-    public RestResponse<LoginResponse> login(@RequestBody LoginRequest request) throws UserNotFoundException {
-        return RestResponse.ok(this.authService.login(request));
-    }
+  @PostMapping(value = "/login")
+  public RestResponse<LoginResponse> login(@RequestBody LoginRequest request)
+      throws UserNotFoundException {
+    return RestResponse.ok(this.authService.login(request));
+  }
 
-    @PostMapping(value = "/register")
-    public RestResponse<Boolean> register(@RequestBody RegisterRequest request) throws UsernameExistedException, EmailExistedException {
-        this.authService.register(request);
-        return RestResponse.ok(true);
-    }
+  @PostMapping(value = "/register")
+  public RestResponse<Boolean> register(@RequestBody RegisterRequest request)
+      throws UsernameExistedException, EmailExistedException {
+    this.authService.register(request);
+    return RestResponse.ok(true);
+  }
 
-    @PreAuthorize("#id == principal.id")
-    @PutMapping(value = "/{id}/password")
-    public RestResponse<Boolean> updatePassword(@PathVariable(value = "id") Long userId, @RequestBody UpdatePasswordRequest request) throws UserNotFoundException {
-        return RestResponse.ok(this.authService.updatePassword(userId, request));
-    }
+  @PreAuthorize("#id == principal.id")
+  @PutMapping(value = "/{id}/password")
+  public RestResponse<Boolean> updatePassword(
+      @PathVariable(value = "id") Long userId, @RequestBody UpdatePasswordRequest request)
+      throws UserNotFoundException {
+    return RestResponse.ok(this.authService.updatePassword(userId, request));
+  }
 
-//    @PostMapping(value = "/token/refresh")
-//    public RestResponse<String>
+  //    @PostMapping(value = "/token/refresh")
+  //    public RestResponse<String>
 
 }

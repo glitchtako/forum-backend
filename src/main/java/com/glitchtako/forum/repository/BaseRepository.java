@@ -4,6 +4,5 @@ import javax.persistence.EntityManager;
 
 public interface BaseRepository {
 
-    EntityManager getEntityManager();
-
+  EntityManager getEntityManager();
 }

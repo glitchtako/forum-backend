@@ -20,32 +20,33 @@ import java.util.Set;
 @Table(name = "categories")
 public class Category {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Column(name = "name")
-    private String name;
+  @Column(name = "name")
+  private String name;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "category")
-    private Set<Article> articles;
+  @JsonIgnore
+  @OneToMany(mappedBy = "category")
+  private Set<Article> articles;
 
-    @ManyToMany
-    @JoinTable( name = "category_moderators",
-                joinColumns = @JoinColumn(name = "category_id"),
-                inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private Set<User> moderators;
+  @ManyToMany
+  @JoinTable(
+      name = "category_moderators",
+      joinColumns = @JoinColumn(name = "category_id"),
+      inverseJoinColumns = @JoinColumn(name = "user_id"))
+  private Set<User> moderators;
 
-    @Version
-    @Column(name = "version")
-    private Integer version;
+  @Version
+  @Column(name = "version")
+  private Integer version;
 
-    @CreationTimestamp
-    @Column(name = "created_at")
-    private Instant createdAt;
+  @CreationTimestamp
+  @Column(name = "created_at")
+  private Instant createdAt;
 
-    @UpdateTimestamp
-    @Column(name = "updated_at")
-    private Instant updatedAt;
+  @UpdateTimestamp
+  @Column(name = "updated_at")
+  private Instant updatedAt;
 }

@@ -22,36 +22,35 @@ import java.util.List;
 @Service
 public class ArticleCommentServiceImpl implements ArticleCommentService {
 
-    @Autowired
-    private ArticleCommentRepository articleCommentRepository;
+  @Autowired private ArticleCommentRepository articleCommentRepository;
 
-    @Autowired
-    private ArticleRepository articleRepository;
+  @Autowired private ArticleRepository articleRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+  @Autowired private UserRepository userRepository;
 
-    @Override
-    public PagedDTO<ArticleComment> getPagedArticleComments(Long articleId, PageArticleCommentRequest request) {
-        final List<ArticleComment> comments = this.articleCommentRepository.getPagedArticleComments(
-                articleId,
-                request.getPage(),
-                request.getSize());
-        return PagedDTO.<ArticleComment>builder()
-                .page(request.getPage())
-                .size(request.getSize())
-                .data(comments)
-                .build();
-    }
+  @Override
+  public PagedDTO<ArticleComment> getPagedArticleComments(
+      Long articleId, PageArticleCommentRequest request) {
+    final List<ArticleComment> comments =
+        this.articleCommentRepository.getPagedArticleComments(
+            articleId, request.getPage(), request.getSize());
+    return PagedDTO.<ArticleComment>builder()
+        .page(request.getPage())
+        .size(request.getSize())
+        .data(comments)
+        .build();
+  }
 
-    @Override
-    public ArticleComment createArticleComment(Long articleId, Long userId, CreateArticleCommentRequest request) throws UserNotFoundException, ArticleNotFoundException {
-        Article article = this.articleRepository.findById(articleId).orElseThrow(ArticleNotFoundException::new);
-        User user = this.userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-        ArticleComment articleComment = ArticleComment.builder()
-                .article(article).content(request.getContent()).user(user).build();
+  @Override
+  public ArticleComment createArticleComment(
+      Long articleId, Long userId, CreateArticleCommentRequest request)
+      throws UserNotFoundException, ArticleNotFoundException {
+    Article article =
+        this.articleRepository.findById(articleId).orElseThrow(ArticleNotFoundException::new);
+    User user = this.userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+    ArticleComment articleComment =
+        ArticleComment.builder().article(article).content(request.getContent()).user(user).build();
 
-        return this.articleCommentRepository.save(articleComment);
-    }
-
+    return this.articleCommentRepository.save(articleComment);
+  }
 }

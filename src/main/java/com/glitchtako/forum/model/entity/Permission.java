@@ -15,20 +15,19 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "permissions",
-        uniqueConstraints = {
-            @UniqueConstraint(columnNames = "name")
-        })
+@Table(
+    name = "permissions",
+    uniqueConstraints = {@UniqueConstraint(columnNames = "name")})
 public class Permission {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Column(name = "name")
-    private String name;
+  @Column(name = "name")
+  private String name;
 
-    @CreationTimestamp
-    @Column(name = "created_at")
-    private Instant createdAt;
+  @CreationTimestamp
+  @Column(name = "created_at")
+  private Instant createdAt;
 }

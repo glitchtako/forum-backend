@@ -5,6 +5,5 @@ import lombok.Data;
 @Data
 public class CreateArticleCommentRequest {
 
-    private String content;
-
+  private String content;
 }

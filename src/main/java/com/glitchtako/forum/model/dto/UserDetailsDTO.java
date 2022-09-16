@@ -14,22 +14,21 @@ import java.util.Set;
 @SuperBuilder
 public class UserDetailsDTO implements UserDetails {
 
-    private Long userId;
+  private Long userId;
 
-    private String email;
+  private String email;
 
-    private String username;
+  private String username;
 
-    @JsonIgnore
-    private String password;
+  @JsonIgnore private String password;
 
-    private boolean isAccountNonExpired;
+  private boolean isAccountNonExpired;
 
-    private boolean isAccountNonLocked;
+  private boolean isAccountNonLocked;
 
-    private boolean isCredentialsNonExpired;
+  private boolean isCredentialsNonExpired;
 
-    private boolean isEnabled;
+  private boolean isEnabled;
 
-    private List<GrantedAuthority> authorities;
+  private List<GrantedAuthority> authorities;
 }

@@ -32,90 +32,94 @@ import java.util.UUID;
 @Service
 public class AuthServiceImpl implements AuthService {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+  @Autowired private AuthenticationManager authenticationManager;
 
-    @Autowired
-    private UserRepository userRepository;
+  @Autowired private UserRepository userRepository;
 
-    @Autowired
-    private RoleRepository roleRepository;
+  @Autowired private RoleRepository roleRepository;
 
-    @Autowired
-    private RefreshTokenRepository refreshTokenRepository;
+  @Autowired private RefreshTokenRepository refreshTokenRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+  @Autowired private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private JwtUtils jwtUtils;
+  @Autowired private JwtUtils jwtUtils;
 
-    private final long refreshTokenExpirationDays = 31;
+  private final long refreshTokenExpirationDays = 31;
 
-    @Override
-    public LoginResponse login(LoginRequest request) throws UserNotFoundException {
+  @Override
+  public LoginResponse login(LoginRequest request) throws UserNotFoundException {
 
-        User user = this.userRepository.findByUsername(request.getUsername()).orElseThrow(UserNotFoundException::new);
+    User user =
+        this.userRepository
+            .findByUsername(request.getUsername())
+            .orElseThrow(UserNotFoundException::new);
 
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+    Authentication authentication =
+        authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = this.jwtUtils.generateJwtToken(authentication);
+    SecurityContextHolder.getContext().setAuthentication(authentication);
+    String jwt = this.jwtUtils.generateJwtToken(authentication);
 
-        UserDetailsDTO authUser = (UserDetailsDTO) authentication.getPrincipal();
-//        Set<String> authorities = authUser.getAuthorities().stream()
-//                .map(GrantedAuthority::getAuthority)
-//                .collect(Collectors.toSet());
+    UserDetailsDTO authUser = (UserDetailsDTO) authentication.getPrincipal();
+    //        Set<String> authorities = authUser.getAuthorities().stream()
+    //                .map(GrantedAuthority::getAuthority)
+    //                .collect(Collectors.toSet());
 
+    Optional<RefreshToken> refreshTokenOpt = this.refreshTokenRepository.findByUser(user);
+    String refreshTokenString = UUID.randomUUID().toString();
 
-        Optional<RefreshToken> refreshTokenOpt = this.refreshTokenRepository.findByUser(user);
-        String refreshTokenString = UUID.randomUUID().toString();
+    if (refreshTokenOpt.isPresent()) {
+      RefreshToken refreshToken = refreshTokenOpt.get();
+      refreshToken.setExpireAt(Instant.now().plus(60, ChronoUnit.DAYS));
+      refreshToken.setToken(refreshTokenString);
+    } else {
+      RefreshToken refreshToken =
+          RefreshToken.builder()
+              .token(refreshTokenString)
+              .user(user)
+              .expireAt(Instant.now().plus(60, ChronoUnit.DAYS))
+              .build();
 
-        if (refreshTokenOpt.isPresent()) {
-            RefreshToken refreshToken = refreshTokenOpt.get();
-            refreshToken.setExpireAt(Instant.now().plus(60, ChronoUnit.DAYS));
-            refreshToken.setToken(refreshTokenString);
-        } else {
-            RefreshToken refreshToken = RefreshToken.builder().token(refreshTokenString)
-                    .user(user)
-                    .expireAt(Instant.now().plus(60, ChronoUnit.DAYS))
-                    .build();
-
-            this.refreshTokenRepository.save(refreshToken);
-        }
-
-        return LoginResponse.builder().accessToken(jwt).refreshToken(refreshTokenString).user(authUser).build();
-
+      this.refreshTokenRepository.save(refreshToken);
     }
 
-    @Override
-    public void register(RegisterRequest request) throws EmailExistedException, UsernameExistedException {
+    return LoginResponse.builder()
+        .accessToken(jwt)
+        .refreshToken(refreshTokenString)
+        .user(authUser)
+        .build();
+  }
 
-        if (this.userRepository.existsByEmail(request.getEmail())) {
-            throw new EmailExistedException();
-        }
+  @Override
+  public void register(RegisterRequest request)
+      throws EmailExistedException, UsernameExistedException {
 
-        if (this.userRepository.existsByUsername(request.getUsername())) {
-            throw new UsernameExistedException();
-        }
-
-        User newUser = new User();
-//        Role role = this.roleRepository.findByName("USER").get();
-
-        newUser.setEmail(request.getEmail());
-        newUser.setPassword(passwordEncoder.encode(request.getPassword()));
-//        newUser.setRoles(Set.of(role));
-        newUser.setUsername(request.getUsername());
-
-        this.userRepository.save(newUser);
+    if (this.userRepository.existsByEmail(request.getEmail())) {
+      throw new EmailExistedException();
     }
 
-    @Override
-    public Boolean updatePassword(Long userId, UpdatePasswordRequest request) throws UserNotFoundException {
-        final User user = this.userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-        this.passwordEncoder.encode(request.getOldPassword());
-
-        return false;
+    if (this.userRepository.existsByUsername(request.getUsername())) {
+      throw new UsernameExistedException();
     }
+
+    User newUser = new User();
+    //        Role role = this.roleRepository.findByName("USER").get();
+
+    newUser.setEmail(request.getEmail());
+    newUser.setPassword(passwordEncoder.encode(request.getPassword()));
+    //        newUser.setRoles(Set.of(role));
+    newUser.setUsername(request.getUsername());
+
+    this.userRepository.save(newUser);
+  }
+
+  @Override
+  public Boolean updatePassword(Long userId, UpdatePasswordRequest request)
+      throws UserNotFoundException {
+    final User user = this.userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+    this.passwordEncoder.encode(request.getOldPassword());
+
+    return false;
+  }
 }

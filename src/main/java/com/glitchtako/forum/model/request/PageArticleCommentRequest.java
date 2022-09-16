@@ -5,6 +5,4 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class PageArticleCommentRequest extends PageRequest {
-
-}
+public class PageArticleCommentRequest extends PageRequest {}

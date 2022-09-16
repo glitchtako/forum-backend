@@ -1,4 +1,3 @@
 package com.glitchtako.forum.service;
 
-public interface UserService {
-}
+public interface UserService {}

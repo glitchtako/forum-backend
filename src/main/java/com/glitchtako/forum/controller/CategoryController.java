@@ -17,22 +17,22 @@ import java.util.List;
 @RestController
 public class CategoryController {
 
-    @Autowired
-    private CategoryService categoryService;
+  @Autowired private CategoryService categoryService;
 
-    @GetMapping(value = "/categories")
-    public RestResponse<List<Category>> getAllCategories() {
-        return RestResponse.ok(this.categoryService.getAllCategories());
-    }
+  @GetMapping(value = "/categories")
+  public RestResponse<List<Category>> getAllCategories() {
+    return RestResponse.ok(this.categoryService.getAllCategories());
+  }
 
-    @PostMapping(value = "/category")
-    public RestResponse<Category> createCategory(@RequestBody CreateCategoryRequest request) {
-        return RestResponse.ok(this.categoryService.createCategory(request));
-    }
+  @PostMapping(value = "/category")
+  public RestResponse<Category> createCategory(@RequestBody CreateCategoryRequest request) {
+    return RestResponse.ok(this.categoryService.createCategory(request));
+  }
 
-    @PutMapping(value = "/category/{id}")
-    public RestResponse<Category> updateCategory(@PathVariable(value = "id") Long categoryId, @RequestBody UpdateCategoryRequest request) throws CategoryNotFoundException {
-        return RestResponse.ok(this.categoryService.updateCategory(categoryId, request));
-    }
-
+  @PutMapping(value = "/category/{id}")
+  public RestResponse<Category> updateCategory(
+      @PathVariable(value = "id") Long categoryId, @RequestBody UpdateCategoryRequest request)
+      throws CategoryNotFoundException {
+    return RestResponse.ok(this.categoryService.updateCategory(categoryId, request));
+  }
 }

@@ -17,25 +17,24 @@ import java.time.Instant;
 @Table(name = "article_comments")
 public class ArticleComment {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "article_id")
-    private Article article;
+  @JsonIgnore
+  @ManyToOne
+  @JoinColumn(name = "article_id")
+  private Article article;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+  @ManyToOne
+  @JoinColumn(name = "user_id")
+  private User user;
 
-    @Lob
-    @Column(name = "content")
-    private String content;
+  @Lob
+  @Column(name = "content")
+  private String content;
 
-    @CreationTimestamp
-    @Column(name = "created_at")
-    private Instant createdAt;
-
+  @CreationTimestamp
+  @Column(name = "created_at")
+  private Instant createdAt;
 }

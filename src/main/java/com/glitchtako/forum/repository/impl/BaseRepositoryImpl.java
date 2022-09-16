@@ -9,10 +9,10 @@ import javax.persistence.PersistenceContext;
 @Repository
 public class BaseRepositoryImpl implements BaseRepository {
 
-    @PersistenceContext private EntityManager entityManager;
+  @PersistenceContext private EntityManager entityManager;
 
-    @Override
-    public EntityManager getEntityManager() {
-        return entityManager;
-    }
+  @Override
+  public EntityManager getEntityManager() {
+    return entityManager;
+  }
 }

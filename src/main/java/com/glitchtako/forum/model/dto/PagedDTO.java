@@ -11,11 +11,11 @@ import java.util.List;
 @Builder
 public class PagedDTO<T> {
 
-    private long total;
+  private long total;
 
-    private Collection<T> data;
+  private Collection<T> data;
 
-    private long size;
+  private long size;
 
-    private long page;
+  private long page;
 }

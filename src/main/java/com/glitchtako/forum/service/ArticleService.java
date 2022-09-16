@@ -10,10 +10,10 @@ import com.glitchtako.forum.model.request.PageArticleRequest;
 
 public interface ArticleService {
 
-    Article getArticleById(Long articleId) throws ArticleNotFoundException;
+  Article getArticleById(Long articleId) throws ArticleNotFoundException;
 
-    PagedDTO<Article> getPagedArticles(PageArticleRequest request);
+  PagedDTO<Article> getPagedArticles(PageArticleRequest request);
 
-    Article createArticle(CreateArticleRequest request) throws CategoryNotFoundException, UserNotFoundException;
-
+  Article createArticle(CreateArticleRequest request)
+      throws CategoryNotFoundException, UserNotFoundException;
 }

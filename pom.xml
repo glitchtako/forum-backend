@@ -46,11 +46,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
 			<groupId>io.micrometer</groupId>
 			<artifactId>micrometer-registry-prometheus</artifactId>
 			<scope>runtime</scope>
@@ -154,6 +149,30 @@
 							<outputDirectory>target/generated-sources/java</outputDirectory>
 							<processor>com.querydsl.apt.jpa.JPAAnnotationProcessor</processor>
 						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Code Formatting -->
+			<plugin>
+				<groupId>com.theoryinpractise</groupId>
+				<artifactId>googleformatter-maven-plugin</artifactId>
+				<version>1.7.3</version>
+				<executions>
+					<execution>
+						<id>reformat-sources</id>
+						<configuration>
+							<includeStale>false</includeStale>
+							<style>GOOGLE</style>
+							<filterModified>false</filterModified>
+							<skip>false</skip>
+							<fixImports>false</fixImports>
+							<maxLineLength>100</maxLineLength>
+						</configuration>
+						<goals>
+							<goal>format</goal>
+						</goals>
+						<phase>process-sources</phase>
 					</execution>
 				</executions>
 			</plugin>

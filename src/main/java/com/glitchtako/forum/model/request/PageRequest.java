@@ -14,12 +14,11 @@ import javax.validation.constraints.Min;
 @AllArgsConstructor
 public abstract class PageRequest {
 
-    @Min(0)
-    protected long page = 0;
+  @Min(0)
+  protected long page = 0;
 
-    @Max(50)
-    protected long size = 50;
+  @Max(50)
+  protected long size = 50;
 
-    protected String sortBy;
-
+  protected String sortBy;
 }

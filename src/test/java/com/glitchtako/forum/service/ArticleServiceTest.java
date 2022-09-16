@@ -19,22 +19,17 @@ import java.util.Optional;
 @ExtendWith(MockitoExtension.class)
 public class ArticleServiceTest {
 
-    @InjectMocks
-    private ArticleService articleService = new ArticleServiceImpl();
+  @InjectMocks private ArticleService articleService = new ArticleServiceImpl();
 
-    @Mock
-    private ArticleRepository articleRepository;
+  @Mock private ArticleRepository articleRepository;
 
-    @Test
-    public void testGetArticleById() throws ArticleNotFoundException {
+  @Test
+  public void testGetArticleById() throws ArticleNotFoundException {
 
-        Article article = Article.builder()
-                .id(1000L)
-                .build();
-        Mockito.when(this.articleRepository.findById(1000L)).thenReturn(Optional.of(article));
-        Article result = this.articleService.getArticleById(1000L);
+    Article article = Article.builder().id(1000L).build();
+    Mockito.when(this.articleRepository.findById(1000L)).thenReturn(Optional.of(article));
+    Article result = this.articleService.getArticleById(1000L);
 
-        Assertions.assertEquals(article, result);
-    }
-
+    Assertions.assertEquals(article, result);
+  }
 }

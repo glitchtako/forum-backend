@@ -9,14 +9,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class OpenApiConfig {
 
-    @Bean
-    public OpenAPI openAPI() {
-        return new OpenAPI()
-                .info(new Info()
+  @Bean
+  public OpenAPI openAPI() {
+    return new OpenAPI()
+        .info(
+            new Info()
                 .title("GlitchTako Forum API")
                 .version("v0.0.1")
                 .license(new License().name("Apache 2.0")));
-    }
-
-
+  }
 }

@@ -16,32 +16,29 @@ import java.util.List;
 @Service
 public class CategoryServiceImpl implements CategoryService {
 
-    @Autowired
-    private CategoryRepository categoryRepository;
+  @Autowired private CategoryRepository categoryRepository;
 
-    @Override
-    public List<Category> getAllCategories() {
-        return this.categoryRepository.findAll();
-    }
+  @Override
+  public List<Category> getAllCategories() {
+    return this.categoryRepository.findAll();
+  }
 
-    @Override
-    public Category createCategory(CreateCategoryRequest request) {
+  @Override
+  public Category createCategory(CreateCategoryRequest request) {
 
-        Category category = this.categoryRepository.save(
-                Category.builder()
-                        .name(request.getName())
-                        .build());
+    Category category =
+        this.categoryRepository.save(Category.builder().name(request.getName()).build());
 
-        return category;
-    }
+    return category;
+  }
 
-    @Override
-    public Category updateCategory(Long categoryId, UpdateCategoryRequest request) throws CategoryNotFoundException {
+  @Override
+  public Category updateCategory(Long categoryId, UpdateCategoryRequest request)
+      throws CategoryNotFoundException {
 
-        Category category = this.categoryRepository.findById(categoryId).orElseThrow(CategoryNotFoundException::new);
-        category.setName(request.getName());
-        return categoryRepository.save(category);
-    }
-
-
+    Category category =
+        this.categoryRepository.findById(categoryId).orElseThrow(CategoryNotFoundException::new);
+    category.setName(request.getName());
+    return categoryRepository.save(category);
+  }
 }

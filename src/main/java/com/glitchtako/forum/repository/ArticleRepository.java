@@ -11,23 +11,23 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ArticleRepository extends JpaRepository<Article, Long>, QuerydslPredicateExecutor<Article>, BaseRepository {
+public interface ArticleRepository
+    extends JpaRepository<Article, Long>, QuerydslPredicateExecutor<Article>, BaseRepository {
 
-    default List<Article> getPagedArticles(Long categoryId, Long authorId, String title, long page, long size) {
+  default List<Article> getPagedArticles(
+      Long categoryId, Long authorId, String title, long page, long size) {
 
-        QArticle article = QArticle.article;
+    QArticle article = QArticle.article;
 
-        return new JPAQueryFactory(this.getEntityManager())
-                .selectFrom(article)
-                .where(ArticlePredicates.category(categoryId)
-                        .and(ArticlePredicates.author(authorId))
-                        .and(ArticlePredicates.likeTitle(title))
-                )
-                .orderBy(article.id.desc())
-                .limit(size)
-                .offset(page * size)
-                .fetch();
-
-    }
-
+    return new JPAQueryFactory(this.getEntityManager())
+        .selectFrom(article)
+        .where(
+            ArticlePredicates.category(categoryId)
+                .and(ArticlePredicates.author(authorId))
+                .and(ArticlePredicates.likeTitle(title)))
+        .orderBy(article.id.desc())
+        .limit(size)
+        .offset(page * size)
+        .fetch();
+  }
 }

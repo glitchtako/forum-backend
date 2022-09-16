@@ -10,9 +10,9 @@ import com.glitchtako.forum.model.response.LoginResponse;
 
 public interface AuthService {
 
-    LoginResponse login(LoginRequest request) throws UserNotFoundException;
+  LoginResponse login(LoginRequest request) throws UserNotFoundException;
 
-    void register(RegisterRequest request) throws EmailExistedException, UsernameExistedException;
+  void register(RegisterRequest request) throws EmailExistedException, UsernameExistedException;
 
-    Boolean updatePassword(Long userId, UpdatePasswordRequest request) throws UserNotFoundException;
+  Boolean updatePassword(Long userId, UpdatePasswordRequest request) throws UserNotFoundException;
 }

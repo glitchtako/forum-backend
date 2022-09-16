@@ -9,18 +9,20 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
 import java.util.List;
 
-public interface ArticleCommentRepository extends JpaRepository<ArticleComment, Long>, QuerydslPredicateExecutor<ArticleComment>, BaseRepository {
+public interface ArticleCommentRepository
+    extends JpaRepository<ArticleComment, Long>,
+        QuerydslPredicateExecutor<ArticleComment>,
+        BaseRepository {
 
-    default List<ArticleComment> getPagedArticleComments(Long articleId, long page, long size) {
-        QArticleComment articleComment = QArticleComment.articleComment;
+  default List<ArticleComment> getPagedArticleComments(Long articleId, long page, long size) {
+    QArticleComment articleComment = QArticleComment.articleComment;
 
-        return new JPAQueryFactory(this.getEntityManager())
-                .selectFrom(articleComment)
-                .where(ArticleCommentPredicates.article(articleId))
-                .orderBy(articleComment.createdAt.desc())
-                .limit(size)
-                .offset(page * size)
-                .fetch();
-    }
-
+    return new JPAQueryFactory(this.getEntityManager())
+        .selectFrom(articleComment)
+        .where(ArticleCommentPredicates.article(articleId))
+        .orderBy(articleComment.createdAt.desc())
+        .limit(size)
+        .offset(page * size)
+        .fetch();
+  }
 }

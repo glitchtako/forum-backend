@@ -1,5 +1,6 @@
 package com.glitchtako.forum.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,10 +14,13 @@ import java.util.Set;
 @SuperBuilder
 public class UserDetailsDTO implements UserDetails {
 
+    private Long userId;
+
     private String email;
 
     private String username;
 
+    @JsonIgnore
     private String password;
 
     private boolean isAccountNonExpired;

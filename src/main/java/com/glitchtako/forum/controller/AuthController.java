@@ -22,14 +22,14 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping(value = "/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) throws UserNotFoundException {
-        return ResponseEntity.ok(this.authService.login(request));
+    public RestResponse<LoginResponse> login(@RequestBody LoginRequest request) throws UserNotFoundException {
+        return RestResponse.ok(this.authService.login(request));
     }
 
     @PostMapping(value = "/register")
-    public ResponseEntity<Boolean> register(@RequestBody RegisterRequest request) throws UsernameExistedException, EmailExistedException {
+    public RestResponse<Boolean> register(@RequestBody RegisterRequest request) throws UsernameExistedException, EmailExistedException {
         this.authService.register(request);
-        return ResponseEntity.ok(true);
+        return RestResponse.ok(true);
     }
 
     @PreAuthorize("#id == principal.id")

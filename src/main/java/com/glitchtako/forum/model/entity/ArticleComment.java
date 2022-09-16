@@ -1,5 +1,6 @@
 package com.glitchtako.forum.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -11,6 +12,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString(exclude = {"article"})
 @Entity
 @Table(name = "article_comments")
 public class ArticleComment {
@@ -19,6 +21,7 @@ public class ArticleComment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "article_id")
     private Article article;

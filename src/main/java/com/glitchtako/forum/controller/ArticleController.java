@@ -14,11 +14,12 @@ import com.glitchtako.forum.model.response.RestResponse;
 import com.glitchtako.forum.service.ArticleCommentService;
 import com.glitchtako.forum.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-public class ArticleController {
+public class ArticleController extends BaseController {
 
     @Autowired
     private ArticleService articleService;
@@ -37,7 +38,9 @@ public class ArticleController {
     }
 
     @PostMapping(value = "/article")
-    public RestResponse<Article> createArticle(@RequestBody CreateArticleRequest request) throws UserNotFoundException, CategoryNotFoundException {
+    @ResponseStatus(code = HttpStatus.CREATED)
+    public RestResponse<Article> createArticle(@RequestBody CreateArticleRequest request)
+            throws UserNotFoundException, CategoryNotFoundException {
         return RestResponse.ok(this.articleService.createArticle(request));
     }
 
@@ -47,8 +50,10 @@ public class ArticleController {
     }
 
     @PostMapping(value = "/article/{id}/comment")
-    public RestResponse<ArticleComment> createComment(@PathVariable Long id, CreateArticleCommentRequest request) throws UserNotFoundException, ArticleNotFoundException {
-        return  RestResponse.ok(this.articleCommentService.createArticleComment(id, request));
+    public RestResponse<ArticleComment> createComment(@PathVariable Long id, @RequestBody CreateArticleCommentRequest request)
+            throws UserNotFoundException, ArticleNotFoundException {
+        Long userId = this.getPrincipalDTO().getUserId();
+        return  RestResponse.ok(this.articleCommentService.createArticleComment(id, userId, request));
     }
 
 }

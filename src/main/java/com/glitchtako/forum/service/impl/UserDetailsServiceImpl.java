@@ -46,6 +46,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 AuthorityUtils.commaSeparatedStringToAuthorityList(String.join(",", permissions));
 
         UserDetailsDTO userDetailsDTO = UserDetailsDTO.builder()
+                .userId(user.getId())
                 .email(user.getEmail())
                 .username(user.getUsername())
                 .password(user.getPassword())

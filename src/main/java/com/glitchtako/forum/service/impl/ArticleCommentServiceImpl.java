@@ -45,9 +45,9 @@ public class ArticleCommentServiceImpl implements ArticleCommentService {
     }
 
     @Override
-    public ArticleComment createArticleComment(Long articleId, CreateArticleCommentRequest request) throws UserNotFoundException, ArticleNotFoundException {
+    public ArticleComment createArticleComment(Long articleId, Long userId, CreateArticleCommentRequest request) throws UserNotFoundException, ArticleNotFoundException {
         Article article = this.articleRepository.findById(articleId).orElseThrow(ArticleNotFoundException::new);
-        User user = this.userRepository.findById(request.getUserId()).orElseThrow(UserNotFoundException::new);
+        User user = this.userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         ArticleComment articleComment = ArticleComment.builder()
                 .article(article).content(request.getContent()).user(user).build();
 

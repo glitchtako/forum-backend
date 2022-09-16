@@ -3,8 +3,8 @@ package com.glitchtako.forum.model.request;
 import lombok.Data;
 
 @Data
-public class CreateArticleCommentRequest {
+public class UpdateCategoryRequest {
 
-    private String content;
+    private String name;
 
 }

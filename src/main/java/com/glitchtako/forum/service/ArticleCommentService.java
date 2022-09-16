@@ -11,5 +11,5 @@ public interface ArticleCommentService {
 
     PagedDTO<ArticleComment> getPagedArticleComments(Long articleId, PageArticleCommentRequest request);
 
-    ArticleComment createArticleComment(Long articleId, CreateArticleCommentRequest request) throws UserNotFoundException, ArticleNotFoundException;
+    ArticleComment createArticleComment(Long articleId, Long userId, CreateArticleCommentRequest request) throws UserNotFoundException, ArticleNotFoundException;
 }

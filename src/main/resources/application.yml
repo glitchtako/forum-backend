@@ -1,8 +1,5 @@
 server:
-#  error:
-#    path: /error
-#  servlet:
-#    contextPath: /api
+  port: ${SERVER_PORT:8080}
 
 spring:
   datasource:
@@ -19,19 +16,6 @@ spring:
 management:
   server:
     port: 7001
-  endpoints:
-    web:
-      exposure:
-        include: '*'
-  endpoint:
-    metrics:
-      enabled: true
-    prometheus:
-      enabled: true
-  metrics:
-    export:
-      prometheus:
-        enabled: true
 
 logging:
   level:

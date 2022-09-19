@@ -2,6 +2,7 @@ package com.glitchtako.forum.controller;
 
 import com.glitchtako.forum.exception.ArticleNotFoundException;
 import com.glitchtako.forum.exception.CategoryNotFoundException;
+import com.glitchtako.forum.exception.EndpointAccessDeniedException;
 import com.glitchtako.forum.exception.UserNotFoundException;
 import com.glitchtako.forum.model.dto.PagedDTO;
 import com.glitchtako.forum.model.entity.Article;
@@ -11,6 +12,7 @@ import com.glitchtako.forum.model.request.CreateArticleRequest;
 import com.glitchtako.forum.model.request.PageArticleRequest;
 import com.glitchtako.forum.model.request.PageArticleCommentRequest;
 import com.glitchtako.forum.model.response.RestResponse;
+import com.glitchtako.forum.service.AccessControlService;
 import com.glitchtako.forum.service.ArticleCommentService;
 import com.glitchtako.forum.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,8 @@ public class ArticleController extends BaseController {
   @Autowired private ArticleService articleService;
 
   @Autowired private ArticleCommentService articleCommentService;
+
+  @Autowired private AccessControlService accessControlService;
 
   @GetMapping(value = "/article/{id}")
   public RestResponse<Article> getArticleById(@PathVariable Long id)
@@ -41,6 +45,14 @@ public class ArticleController extends BaseController {
   public RestResponse<Article> createArticle(@RequestBody CreateArticleRequest request)
       throws UserNotFoundException, CategoryNotFoundException {
     return RestResponse.ok(this.articleService.createArticle(request));
+  }
+
+  @PutMapping(value = "/article/{id}")
+  public RestResponse<Article> updateArticle(
+      @PathVariable(value = "id") Long id, @RequestBody CreateArticleRequest request)
+      throws UserNotFoundException, CategoryNotFoundException {
+    return RestResponse.ok(null);
+    //    return RestResponse.ok(this.articleService.createArticle(request));
   }
 
   @GetMapping(value = "/article/{id}/comments")

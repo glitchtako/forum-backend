@@ -4,22 +4,28 @@ import com.glitchtako.forum.filter.AuthTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
+@EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 public class WebSecurityConfig {
 
   @Autowired public UserDetailsService userDetailsService;
 
   @Autowired private AuthTokenFilter authTokenFilter;
+
+  @Autowired private CustomAccessDeniedHandler customAccessDeniedHandler;
 
   @Bean
   public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -65,8 +71,15 @@ public class WebSecurityConfig {
             "/actuator/**",
             "/h2-console/**")
         .permitAll()
+        .antMatchers("/auth/{id}/**")
+        .access("@accessControlService.checkUserId(authentication, #id)")
+        .antMatchers(HttpMethod.PUT, "/article/{id}/**")
+        .access("@accessControlService.checkArticleAuthor(authentication, #id)")
         .antMatchers("/**")
         .authenticated()
+        .and()
+        .exceptionHandling()
+        .accessDeniedHandler(customAccessDeniedHandler)
         .and()
         .addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class)
         .build();

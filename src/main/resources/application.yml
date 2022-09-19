@@ -21,3 +21,7 @@ logging:
   level:
     root: INFO
     com.glitchtako.forum: DEBUG
+
+springdoc:
+  swagger-ui:
+    path: /index.html

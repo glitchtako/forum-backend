@@ -61,15 +61,15 @@ public class WebSecurityConfig {
         .authorizeRequests()
         .antMatchers(
             "/auth/**",
-            "/swagger-ui/",
+            "/swagger-ui",
             "/swagger-ui/**",
             "/v3/api-docs",
             "/v3/api-docs/**",
+            "/favicon.ico",
             "/configuration/ui",
             "/swagger-resources/**",
             "/configuration/security",
-            "/actuator/**",
-            "/h2-console/**")
+            "/actuator/**")
         .permitAll()
         .antMatchers("/auth/{id}/**")
         .access("@accessControlService.checkUserId(authentication, #id)")

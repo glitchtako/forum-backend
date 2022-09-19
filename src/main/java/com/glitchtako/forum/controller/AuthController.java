@@ -1,5 +1,6 @@
 package com.glitchtako.forum.controller;
 
+import com.glitchtako.forum.annotation.LogActivity;
 import com.glitchtako.forum.exception.EmailExistedException;
 import com.glitchtako.forum.exception.UserNotFoundException;
 import com.glitchtako.forum.exception.UsernameExistedException;
@@ -33,7 +34,7 @@ public class AuthController {
     return RestResponse.ok(true);
   }
 
-  @PreAuthorize("#id == principal.id")
+  @LogActivity(title = "Auth", action = "Update user password")
   @PutMapping(value = "/{id}/password")
   public RestResponse<Boolean> updatePassword(
       @PathVariable(value = "id") Long userId, @RequestBody UpdatePasswordRequest request)

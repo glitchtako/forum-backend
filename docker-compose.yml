@@ -1,0 +1,33 @@
+version: "3"
+
+services:
+  foxxy-forum-engine:
+    image: "glitchtako/foxxy-forum-engine:latest"
+    build:
+      context: .
+    container_name: foxxy-forum-engine
+    depends_on:
+      - database
+    ports:
+      - 8080:8080
+    environment:
+      - AUTH_SECRET=6250655368566D5970337336763979244226452948404D635166546A576E5A7234743777217A25432A462D4A614E645267556B58703273357638782F413F4428
+      - DATASOURCE_URL=jdbc:postgresql://database:5432/postgres
+      - DATASOURCE_DIALECT=org.hibernate.dialect.PostgreSQLDialect
+      - DATASOURCE_USERNAME=admin
+      - DATASOURCE_PASSWORD=admin
+  database:
+    image: "postgres:latest"
+    container_name: postgresql-database
+    ports:
+      - 5432:5432
+    volumes:
+      - database_volume:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=foxxy-forum
+      - PGDATA=/var/lib/postgresql/data/pgdata
+
+volumes:
+  database_volume: {}
